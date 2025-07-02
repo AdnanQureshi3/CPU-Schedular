@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function ProcessTable() {
+export default function ProcessTable({onSubmit}) {
   const [processes, setProcesses] = useState([
     { id: 0, arrival: '', burst: '' }
   ])
@@ -20,6 +20,16 @@ export default function ProcessTable() {
     updated[index][field] = value
     setProcesses(updated)
   }
+  
+  const handleRun = () => {
+  const finalProcesses = processes.map(p => ({
+    id: p.id,
+    arrival_time: parseInt(p.arrival),
+    burst_time: parseInt(p.burst)
+  }));
+  onSubmit(finalProcesses); // send to AlgoPage
+};
+
 
   return (
     <div className="p-4">
@@ -73,7 +83,16 @@ export default function ProcessTable() {
         >
           - Del Process
         </button>
+
+        <button
+  onClick={handleRun}
+  className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700"
+>
+  ▶ Run Algorithm
+</button>
+
       </div>
+      
     </div>
   )
 }

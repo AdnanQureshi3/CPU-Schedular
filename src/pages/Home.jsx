@@ -2,6 +2,11 @@ import React from 'react'
 import Header from '../components/header'
 import { useNavigate } from 'react-router-dom';
 import { use } from 'react';
+// const fcfsimg = 
+import FCFSimg from '../assets/FCFS-image.png'
+import SJFimg from '../assets/rrImage.png'
+import RRimg from '../assets/SJF-Image.png'
+import PRimg from '../assets/priorityImage.png'
 
 function Home() {
     const navigate = useNavigate();
@@ -9,19 +14,19 @@ function Home() {
   const Algorithms = [
     {
       name:"FCFS",
-      image:"",
+      image:FCFSimg,
+    },
+    {
+      name:"SJF",
+      image:SJFimg,
+    },
+    {
+      name:"RR",
+      image:RRimg,
     },
     {
       name:"FCFS",
-      image:"",
-    },
-    {
-      name:"FCFS",
-      image:"",
-    },
-    {
-      name:"FCFS",
-      image:"",
+      image:PRimg,
     },
     {
       name:"FCFS",
@@ -53,7 +58,9 @@ function Home() {
           <div className='w-52 border-2 cursor-pointer gap-4 aspect-square '
           onClick={() => {handleClick(al.name)}}
           >
-            <h1>{al.name}</h1>
+   
+            <img src={al.image} alt="" />
+            
           </div>
         ))
       }
