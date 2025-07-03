@@ -1,8 +1,11 @@
 import { useState } from 'react'
 
-export default function ProcessTable({onSubmit}) {
+export default function ProcessTable({onSubmitVisualization , onSubmitRUN}) {
   const [processes, setProcesses] = useState([
-    { id: 0, arrival: '', burst: '' }
+    { id: 0, arrival: '10', burst: '2' },
+    { id: 1, arrival: '3', burst: '1' },
+    { id: 2, arrival: '4', burst: '2' },
+    { id: 3, arrival: '8', burst: '3' },
   ])
 
   const addProcess = () => {
@@ -20,14 +23,24 @@ export default function ProcessTable({onSubmit}) {
     updated[index][field] = value
     setProcesses(updated)
   }
-  
+
   const handleRun = () => {
   const finalProcesses = processes.map(p => ({
     id: p.id,
     arrival_time: parseInt(p.arrival),
     burst_time: parseInt(p.burst)
   }));
-  onSubmit(finalProcesses); // send to AlgoPage
+  onSubmitRUN(finalProcesses); // send to AlgoPage
+};
+
+
+  const handleVisualize = () => {
+  const finalProcesses = processes.map(p => ({
+    id: p.id,
+    arrival_time: parseInt(p.arrival),
+    burst_time: parseInt(p.burst)
+  }));
+  onSubmitVisualization(finalProcesses); // send to AlgoPage
 };
 
 
@@ -73,22 +86,28 @@ export default function ProcessTable({onSubmit}) {
       <div className="mt-4 flex justify-center gap-6">
         <button
           onClick={addProcess}
-          className="bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:bg-green-700"
+          className="bg-green-600 cursor-pointer text-white px-6 py-2 rounded-full font-bold hover:bg-green-700"
         >
           + Add Process
         </button>
         <button
           onClick={deleteProcess}
-          className="bg-red-600 text-white px-6 py-2 rounded-full font-bold hover:bg-red-700"
+          className="bg-red-600 cursor-pointer text-white px-6 py-2 rounded-full font-bold hover:bg-red-700"
         >
           - Del Process
         </button>
 
         <button
   onClick={handleRun}
-  className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700"
+  className="bg-blue-600 cursor-pointer text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700"
 >
   ▶ Run Algorithm
+</button>
+        <button
+  onClick={handleVisualize}
+  className="bg-yellow-400 cursor-pointer text-white px-6 py-2 rounded-full font-bold hover:bg-yellow-600"
+>
+  ▶ Visualize it
 </button>
 
       </div>

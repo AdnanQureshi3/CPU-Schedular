@@ -7,7 +7,6 @@ import FCFSimg from '../assets/FCFS-image.png'
 import SJFimg from '../assets/rrImage.png'
 import RRimg from '../assets/SJF-Image.png'
 import PRimg from '../assets/priorityImage.png'
-
 function Home() {
     const navigate = useNavigate();
   
@@ -43,6 +42,8 @@ function Home() {
   ]
 
   const handleClick = (algoName) => {
+    
+
     navigate('/algo', { state: { name: algoName } });
   };
 
