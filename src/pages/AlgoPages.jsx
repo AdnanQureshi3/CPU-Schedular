@@ -1,7 +1,8 @@
-import { useLocation } from 'react-router-dom'
+import { data, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
 import { runFCFSLive, FCFS } from '../alogirthm/fcfs' // adjust path if needed
+import { roundRobin , runRoundRobinLive} from '../alogirthm/RR' // adjust path if needed
 import ProcessTable from '../components/processInput'
 import ProcessOutputTable from '../components/processOutputTable'
 
@@ -40,12 +41,29 @@ function AlgoPage() {
       stopRef.current = stopFn;
     }
 
+    else if(algoName === "RR"){
+      
+      const stopFn = runRoundRobinLive(
+        processes,
+        2,
+        (data) => setLiveData(data),
+        () => setFinished(true)
+      )
+      stopRef.current = stopFn;
+    }
+
   }
+
   const handleProcessRun = (processes) => {
     if (algoName === 'FCFS') {
       setData(FCFS(processes));
     }
+
+    else if(algoName === "RR"){
+      setData(roundRobin(processes , 3))
+    }
   }
+
   const handleReset = () => {
     setLiveData(null);
     setData(null);
@@ -61,6 +79,8 @@ function AlgoPage() {
       </h1>
 
       <ProcessTable onSubmitVisualization={handleProcessVisualization} onSubmitRUN={handleProcessRun} />
+
+
       {
         Data &&
         <ProcessOutputTable data={Data} />
@@ -100,7 +120,7 @@ function AlgoPage() {
 
 
                 return (
-                  <div key={idx} style={{ width: `${duration * 3.5}%` }} className="text-center">
+                  <div key={idx} style={{ width: `${duration * 3}%` }} className="text-center">
 
                     <div className={`${g.processId !== null ? 'bg-blue-500' : "bg-red-500"} text-white px-4 py-2 rounded`}>
                       {g.processId !== null ? `P${g.processId}` : 'Idle'}
@@ -129,7 +149,7 @@ function AlgoPage() {
         </div>
       )}
 
-      {finished && (
+      {finished  && (
         <p className="mt-4 text-green-700 font-bold">
           ✅ Simulation Complete
         </p>

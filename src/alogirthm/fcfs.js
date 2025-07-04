@@ -147,8 +147,8 @@ export function runFCFSLive(processes, onUpdate, onFinish) {
 
         time += 1;
         
+        return () => clearInterval(interval);
     }, 1000);
-    return () => clearInterval(interval);
 
 
 

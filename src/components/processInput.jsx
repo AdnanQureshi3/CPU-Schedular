@@ -31,7 +31,7 @@ export default function ProcessTable({onSubmitVisualization , onSubmitRUN}) {
     burst_time: parseInt(p.burst)
   }));
   onSubmitRUN(finalProcesses); // send to AlgoPage
-};
+  };
 
 
   const handleVisualize = () => {

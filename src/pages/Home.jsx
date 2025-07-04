@@ -16,7 +16,7 @@ function Home() {
       image:FCFSimg,
     },
     {
-      name:"SJF",
+      name:"RR",
       image:SJFimg,
     },
     {
