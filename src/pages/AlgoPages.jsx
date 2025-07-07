@@ -117,7 +117,7 @@ function AlgoPage() {
         Selected Algorithm: {algoName}
       </h1>
 
-      <ProcessTable onSubmitVisualization={handleProcessVisualization} onSubmitRUN={handleProcessRun} />
+      <ProcessTable onSubmitVisualization={handleProcessVisualization} onSubmitRUN={handleProcessRun} selectedAlgorithm={algoName} />
 
 
       {
