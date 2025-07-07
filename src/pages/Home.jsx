@@ -13,18 +13,22 @@ function Home() {
   const Algorithms = [
     {
       name:"FCFS",
+      id:1,
       image:FCFSimg,
     },
     {
       name:"RR",
+      id:2,
       image:SJFimg,
     },
     {
-      name:"RR",
+      name:"SJFNONPRE",
+      id:3,
       image:RRimg,
     },
     {
-      name:"FCFS",
+      name:"SJF Premitive",
+      id:4,
       image:PRimg,
     },
     {

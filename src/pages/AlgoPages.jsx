@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 
 import { runFCFSLive, FCFS } from '../alogirthm/fcfs' // adjust path if needed
 import { roundRobin , runRoundRobinLive} from '../alogirthm/RR' // adjust path if needed
+import { sjfNonPreemptive , runSJFLive} from '../alogirthm/SjfNonPre' 
+import { sjfPreemptive , runSRTFLive } from '../alogirthm/SjfPremitive'
+
 import ProcessTable from '../components/processInput'
 import ProcessOutputTable from '../components/processOutputTable'
 
@@ -37,12 +40,11 @@ function AlgoPage() {
         (data) => setLiveData(data),
         () => setFinished(true)
       )
-
       stopRef.current = stopFn;
     }
 
     else if(algoName === "RR"){
-      
+
       const stopFn = runRoundRobinLive(
         processes,
         2,
@@ -51,6 +53,25 @@ function AlgoPage() {
       )
       stopRef.current = stopFn;
     }
+    else if(algoName === "SJFNONPRE"){
+
+      const stopFn = runSJFLive(
+        processes,
+        (data) => setLiveData(data),
+        () => setFinished(true)
+      )
+      stopRef.current = stopFn;
+    }
+    else if(algoName === "SJF Premitive"){
+
+      const stopFn = runSRTFLive(
+        processes,
+        (data) => setLiveData(data),
+        () => setFinished(true)
+      )
+      stopRef.current = stopFn;
+    }
+    
 
   }
 
@@ -58,9 +79,14 @@ function AlgoPage() {
     if (algoName === 'FCFS') {
       setData(FCFS(processes));
     }
-
     else if(algoName === "RR"){
       setData(roundRobin(processes , 3))
+    }
+    else if(algoName === "SJFNONPRE"){
+      setData(sjfNonPreemptive(processes));
+    }
+    else if(algoName === "SJF Premitive"){
+      setData(sjfPreemptive(processes));
     }
   }
 

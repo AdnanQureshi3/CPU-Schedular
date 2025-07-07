@@ -1,6 +1,4 @@
-export function roundRobin(processes, timeQuanta) {
-  if (!timeQuanta || timeQuanta <= 0) timeQuanta = 90;
-
+export function sjfNonPreemptive(processes) {
   // Create deep copies of processes with remaining burst time
   const processesCopy = processes.map(p => ({
     id: p.id,
@@ -46,30 +44,27 @@ export function roundRobin(processes, timeQuanta) {
       break;
     }
     
-    // Get next process from queue
+    // SJF: Sort by burst time (shortest first)
+    processQueue.sort((a, b) => a.burst_time - b.burst_time);
+    
+    // Get shortest job from queue
     const current = processQueue.shift();
     
-    // Record response time if first execution
+    // Record response time on first execution
     if (firstExecution[current.id] === undefined) {
       firstExecution[current.id] = true;
       responseTime[current.id] = time - current.arrival_time;
     }
     
-    // Process execution
-    const executionTime = Math.min(timeQuanta, current.remaining);
-    current.remaining -= executionTime;
-    time += executionTime;
+    // Process runs to completion (non-preemptive)
+    time += current.remaining;
+    current.remaining = 0;
     
-    // Move processes that arrived during execution
+    // Record completion
+    completionTime[current.id] = time;
+    
+    // Add processes that arrived during execution
     moveArrivedProcesses(time);
-    
-    // Check for completion
-    if (current.remaining === 0) {
-      completionTime[current.id] = time;
-    } else {
-      // Return to queue if still has burst time
-      processQueue.push(current);
-    }
   }
 
   // Calculate statistics
@@ -111,7 +106,7 @@ export function roundRobin(processes, timeQuanta) {
     completionTime: time
   };
 }
-export function runRoundRobinLive(processes, timeQuanta, onUpdate, onFinish) {
+export function runSJFLive(processes, onUpdate, onFinish) {
   let time = 0;
   let ready = [];
   let queue = processes.map(p => ({ ...p })); // Create copies to avoid mutation
@@ -119,7 +114,7 @@ export function runRoundRobinLive(processes, timeQuanta, onUpdate, onFinish) {
   let gantt = [];
   let running = null;
   let completed = [];
-  let currentRunTime = 0; // Track continuous CPU time for running process
+  let remainingBurst = 0; // Track remaining burst for running process
 
   const interval = setInterval(() => {
     // Add arriving processes to ready queue
@@ -144,10 +139,13 @@ export function runRoundRobinLive(processes, timeQuanta, onUpdate, onFinish) {
       }
     }
 
+    // SJF: Sort process queue by burst time (shortest first)
+    processQueue.sort((a, b) => a.burst_time - b.burst_time);
+
     // Start new process if CPU is free
     if (!running && processQueue.length > 0) {
       running = processQueue.shift();
-      currentRunTime = 0; // Reset quantum counter
+      remainingBurst = running.burst_time;
 
       // Close previous idle period if needed
       if (gantt.length > 0 && gantt[gantt.length - 1].processId === null) {
@@ -184,23 +182,20 @@ export function runRoundRobinLive(processes, timeQuanta, onUpdate, onFinish) {
 
     // Process current CPU burst
     if (running) {
-      running.burst_time--;
-      currentRunTime++;
+      remainingBurst--;
+      running.burst_time = remainingBurst; // Update actual burst time
 
-      const shouldPreempt = currentRunTime >= timeQuanta;
-      const shouldComplete = running.burst_time <= 0;
-
-      if (shouldComplete || shouldPreempt) {
+      // Check if process completed
+      if (remainingBurst === 0) {
         // Close current execution period
-        const currentGantt = gantt[gantt.length - 1];
-        currentGantt.endTime = time + 1;
-
-        if (shouldComplete) {
-          completed.push(running);
-        } else {
-          processQueue.push(running); // Requeue if not finished
-        }
-
+        gantt[gantt.length - 1].endTime = time + 1;
+        
+        // Record completion
+        completed.push({ 
+          ...running,
+          completion_time: time + 1
+        });
+        
         running = null;
       }
     }
