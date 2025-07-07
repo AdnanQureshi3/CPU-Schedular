@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { use } from 'react';
 // const fcfsimg = 
 import FCFSimg from '../assets/FCFS-image.png'
-import SJFimg from '../assets/rrImage.png'
-import RRimg from '../assets/SJF-Image.png'
+import RRimg from '../assets/rrImage.png'
+import SJF_Non_preemptiveimg from '../assets/SJF-non-preemptive.png'
 import PRimg from '../assets/priorityImage.png'
 function Home() {
     const navigate = useNavigate();
@@ -17,14 +17,14 @@ function Home() {
       image:FCFSimg,
     },
     {
-      name:"RR",
+      name:"Round Robin",
       id:2,
-      image:SJFimg,
+      image:RRimg,
     },
     {
-      name:"SJFNONPRE",
+      name:"SJF Non Preemptive",
       id:3,
-      image:RRimg,
+      image:SJF_Non_preemptiveimg,
     },
     {
       name:"SJF Premitive",
@@ -32,8 +32,8 @@ function Home() {
       image:PRimg,
     },
     {
-      name:"FCFS",
-      image:"",
+      name:"Priority Non Preemptive",
+      image:PRimg,
     },
     {
       name:"FCFS",

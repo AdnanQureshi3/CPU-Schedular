@@ -5,6 +5,7 @@ import { runFCFSLive, FCFS } from '../alogirthm/fcfs' // adjust path if needed
 import { roundRobin , runRoundRobinLive} from '../alogirthm/RR' // adjust path if needed
 import { sjfNonPreemptive , runSJFLive} from '../alogirthm/SjfNonPre' 
 import { sjfPreemptive , runSRTFLive } from '../alogirthm/SjfPremitive'
+import { runPriorityNonPreemptiveLive , priorityNonPreemptive } from '../alogirthm/Priority_non_preemptive'
 
 import ProcessTable from '../components/processInput'
 import ProcessOutputTable from '../components/processOutputTable'
@@ -43,7 +44,7 @@ function AlgoPage() {
       stopRef.current = stopFn;
     }
 
-    else if(algoName === "RR"){
+    else if(algoName === "Round Robin"){
 
       const stopFn = runRoundRobinLive(
         processes,
@@ -53,7 +54,7 @@ function AlgoPage() {
       )
       stopRef.current = stopFn;
     }
-    else if(algoName === "SJFNONPRE"){
+    else if(algoName === "SJF Non Preemptive"){
 
       const stopFn = runSJFLive(
         processes,
@@ -71,6 +72,15 @@ function AlgoPage() {
       )
       stopRef.current = stopFn;
     }
+    else if(algoName === "Priority Non Preemptive"){
+
+      const stopFn = runPriorityNonPreemptiveLive(
+        processes,
+        (data) => setLiveData(data),
+        () => setFinished(true)
+      )
+      stopRef.current = stopFn;
+    }
     
 
   }
@@ -79,14 +89,17 @@ function AlgoPage() {
     if (algoName === 'FCFS') {
       setData(FCFS(processes));
     }
-    else if(algoName === "RR"){
+    else if(algoName === "Round Robin"){
       setData(roundRobin(processes , 3))
     }
-    else if(algoName === "SJFNONPRE"){
+    else if(algoName === "SJF Non Preemptive"){
       setData(sjfNonPreemptive(processes));
     }
     else if(algoName === "SJF Premitive"){
       setData(sjfPreemptive(processes));
+    }
+    else if(algoName === "Priority Non Preemptive"){
+      setData(priorityNonPreemptive(processes));
     }
   }
 
