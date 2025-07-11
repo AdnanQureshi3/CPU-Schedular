@@ -7,6 +7,9 @@ import FCFSimg from '../assets/FCFS-image.png'
 import RRimg from '../assets/rrImage.png'
 import SJF_Non_preemptiveimg from '../assets/SJF-non-preemptive.png'
 import PRimg from '../assets/priorityImage.png'
+import Ljf_PreemptiveImg from '../assets/Ljf_preemptive.png'
+import Priority_PreemptiveImg from '../assets/Priority_preemptive.png'
+
 function Home() {
     const navigate = useNavigate();
   
@@ -36,12 +39,16 @@ function Home() {
       image:PRimg,
     },
     {
-      name:"FCFS",
-      image:"",
+      name:"Priority Preemptive",
+      image:Priority_PreemptiveImg ,
     },
     {
-      name:"FCFS",
-      image:"",
+      name:"LJF Non Preemptive",
+      image:PRimg,
+    },
+    {
+      name:"LJF Preemptive",
+      image:Ljf_PreemptiveImg,
     },
   ]
 
