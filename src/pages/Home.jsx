@@ -6,9 +6,11 @@ import { use } from 'react';
 import FCFSimg from '../assets/FCFS-image.png'
 import RRimg from '../assets/rrImage.png'
 import SJF_Non_preemptiveimg from '../assets/SJF-non-preemptive.png'
-import PRimg from '../assets/priorityImage.png'
+import PRimg from '../assets/PR_Preemptive.png'
+import PRnonPreemtive from '../assets/PR_non_Preemptive.png'
 import Ljf_PreemptiveImg from '../assets/Ljf_preemptive.png'
-import Priority_PreemptiveImg from '../assets/Priority_preemptive.png'
+import SJF_preemptiveimg from '../assets/SJF_preemptive.png'
+import LJF_NON_PreemptiveImg from '../assets/LJFnonPreemptive.png'
 
 function Home() {
     const navigate = useNavigate();
@@ -32,19 +34,19 @@ function Home() {
     {
       name:"SJF Premitive",
       id:4,
-      image:PRimg,
+      image:SJF_preemptiveimg,
     },
     {
       name:"Priority Non Preemptive",
-      image:PRimg,
+      image:PRnonPreemtive,
     },
     {
       name:"Priority Preemptive",
-      image:Priority_PreemptiveImg ,
+      image:PRimg,
     },
     {
       name:"LJF Non Preemptive",
-      image:PRimg,
+      image:LJF_NON_PreemptiveImg ,
     },
     {
       name:"LJF Preemptive",
