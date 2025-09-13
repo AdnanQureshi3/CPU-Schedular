@@ -59,7 +59,13 @@ function AlgoPage() {
   const [Data, setData] = useState(null)
   const [finished, setFinished] = useState(false);
   const [stop, setStop] = useState(false);
+const SetDateChart =()=>{
+   let dailyStats = JSON.parse(localStorage.getItem("dailyStats")) || {};
+  const today = new Date().toISOString().split("T")[0]; // e.g. "2025-09-13"
+  dailyStats[today] = (dailyStats[today] || 0) + 1;
+  localStorage.setItem("dailyStats", JSON.stringify(dailyStats));
 
+}
 
   const handleProcessVisualization = (processes) => {
     setLiveData(null)
@@ -144,6 +150,8 @@ function AlgoPage() {
   }
 
   const handleProcessRun = (processes) => {
+      let stats = JSON.parse(localStorage.getItem("algoStats")) || {};
+    
     if (algoName === 'FCFS') {
       setData(FCFS(processes));
     }
@@ -168,6 +176,10 @@ function AlgoPage() {
     else if(algoName === "LJF Preemptive"){
       setData(ljfPreemptive(processes));
     }
+    stats[algoName] = (stats[algoName] || 0) + 1;
+  localStorage.setItem("algoStats", JSON.stringify(stats));
+
+  SetDateChart();
   }
 
   const handleReset = () => {
