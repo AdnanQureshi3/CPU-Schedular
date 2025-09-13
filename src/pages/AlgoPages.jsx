@@ -12,12 +12,41 @@ import { ljfPreemptive , runLJFPreemptiveLive } from '../alogirthm/LJF_Preemptiv
 import ProcessTable from '../components/processInput'
 import ProcessOutputTable from '../components/processOutputTable'
 
+
+function TimeQuanta({ timeQuantaValue, setTimeQuantaValue }) {
+
+  const handleTimeQuantaChange = (e) => {
+    setTimeQuantaValue(Number(e.target.value));
+  };
+
+  return (
+    <div className="mb-4 p-4 bg-white rounded shadow-md max-w-sm mx-auto">
+      <label className="block text-gray-700 font-semibold mb-2">
+        ⏱ Time Quantum
+      </label>
+      <input
+        type="number"
+        value={timeQuantaValue}
+        min="1"
+        onChange={handleTimeQuantaChange}
+        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <p className="mt-2 text-gray-600">
+        Current Time Quantum: <span className="font-bold">{timeQuantaValue}</span>
+      </p>
+    </div>
+  );
+}
+
+
+
 function AlgoPage() {
 
   const resultRef = useRef();
   const stopRef = useRef(null);
 
   const [liveData, setLiveData] = useState(null)
+  const [timeQuantaValue, setTimeQuantaValue] = useState(1);
 
   useEffect(() => {
     if (liveData && resultRef.current) {
@@ -50,7 +79,7 @@ function AlgoPage() {
 
       const stopFn = runRoundRobinLive(
         processes,
-        2,
+      timeQuantaValue,
         (data) => setLiveData(data),
         () => setFinished(true)
       )
@@ -119,7 +148,7 @@ function AlgoPage() {
       setData(FCFS(processes));
     }
     else if(algoName === "Round Robin"){
-      setData(roundRobin(processes , 3))
+      setData(roundRobin(processes , timeQuantaValue));
     }
     else if(algoName === "SJF Non Preemptive"){
       setData(sjfNonPreemptive(processes));
@@ -156,6 +185,11 @@ function AlgoPage() {
       </h1>
 
       <ProcessTable onSubmitVisualization={handleProcessVisualization} onSubmitRUN={handleProcessRun} selectedAlgorithm={algoName} />
+{   algoName === "Round Robin" && <div>
+      <TimeQuanta timeQuantaValue={timeQuantaValue} setTimeQuantaValue={setTimeQuantaValue} />
+
+      </div>}
+   
 
 
       {
