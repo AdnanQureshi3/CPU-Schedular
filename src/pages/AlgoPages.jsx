@@ -11,7 +11,7 @@ import { ljfNonPreemptive , runLJFNonPreemptiveLive } from '../alogirthm/Ljf_non
 import { ljfPreemptive , runLJFPreemptiveLive } from '../alogirthm/LJF_Preemptive'
 import ProcessTable from '../components/processInput'
 import ProcessOutputTable from '../components/processOutputTable'
-
+import { useNavigate } from 'react-router-dom';
 
 function TimeQuanta({ timeQuantaValue, setTimeQuantaValue }) {
 
@@ -44,6 +44,7 @@ function AlgoPage() {
 
   const resultRef = useRef();
   const stopRef = useRef(null);
+  const navigate = useNavigate();
 
   const [liveData, setLiveData] = useState(null)
   const [timeQuantaValue, setTimeQuantaValue] = useState(1);
@@ -59,12 +60,20 @@ function AlgoPage() {
   const [Data, setData] = useState(null)
   const [finished, setFinished] = useState(false);
   const [stop, setStop] = useState(false);
+  const [disabled , setDisabled] = useState(false);
+
+
 const SetDateChart =()=>{
    let dailyStats = JSON.parse(localStorage.getItem("dailyStats")) || {};
   const today = new Date().toISOString().split("T")[0]; // e.g. "2025-09-13"
   dailyStats[today] = (dailyStats[today] || 0) + 1;
   localStorage.setItem("dailyStats", JSON.stringify(dailyStats));
 
+}
+function SetAlgoHistory(algoName) {
+  let stats = JSON.parse(localStorage.getItem("algoStats")) || {};
+   stats[algoName] = (stats[algoName] || 0) + 1;
+  localStorage.setItem("algoStats", JSON.stringify(stats));
 }
 
   const handleProcessVisualization = (processes) => {
@@ -145,12 +154,13 @@ const SetDateChart =()=>{
       )
       stopRef.current = stopFn;
     }
+     SetAlgoHistory(algoName);
+  SetDateChart();
     
-
   }
 
   const handleProcessRun = (processes) => {
-      let stats = JSON.parse(localStorage.getItem("algoStats")) || {};
+    
     
     if (algoName === 'FCFS') {
       setData(FCFS(processes));
@@ -176,8 +186,7 @@ const SetDateChart =()=>{
     else if(algoName === "LJF Preemptive"){
       setData(ljfPreemptive(processes));
     }
-    stats[algoName] = (stats[algoName] || 0) + 1;
-  localStorage.setItem("algoStats", JSON.stringify(stats));
+    SetAlgoHistory(algoName);
 
   SetDateChart();
   }
@@ -191,109 +200,94 @@ const SetDateChart =()=>{
 
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Selected Algorithm: {algoName}
-      </h1>
+   <div className="relative p-6">  {/* Added relative here */}
+  
+  <div className="absolute top-4 left-4 flex space-x-2">
+    <button 
+      onClick={() => navigate(-1)} 
+      className="bg-white text-indigo-600 font-medium px-3 py-1 rounded hover:bg-indigo-100 transition"
+    >
+      Back
+    </button>
+  </div>
 
-      <ProcessTable onSubmitVisualization={handleProcessVisualization} onSubmitRUN={handleProcessRun} selectedAlgorithm={algoName} />
-{   algoName === "Round Robin" && <div>
+  <h1 className="text-2xl font-bold mb-4 text-center">
+    Selected Algorithm: {algoName}
+  </h1>
+
+  <ProcessTable 
+    onSubmitVisualization={handleProcessVisualization} 
+    onSubmitRUN={handleProcessRun} 
+    selectedAlgorithm={algoName} 
+  />
+
+  {algoName === "Round Robin" && (
+    <div>
       <TimeQuanta timeQuantaValue={timeQuantaValue} setTimeQuantaValue={setTimeQuantaValue} />
-
-      </div>}
-   
-
-
-      {
-        Data &&
-        <ProcessOutputTable data={Data} />
-      }
-
-      {
-        liveData &&
-        <h1 className='text-lg font-semibold pl-3 mt-6'> 📊Process Visualization </h1>
-      }
-
-      {liveData && (
-
-        <div ref={resultRef} className="mt-3  bg-gray-100 p-4 rounded shadow">
-
-          <p className="text-lg font-semibold">⏱ Time: {liveData.time}</p>
-
-          <p className="mt-2">
-            🟡 Ready Queue:{' '}
-            {liveData.readyQueue.length > 0
-              ? liveData.readyQueue.map((p) => `P${p.id}`).join(', ')
-              : 'Empty'}
-          </p>
-
-          <p className="mt-2">
-            🟢 CPU Running:{' '}
-            {liveData.cpu ? `P${liveData.cpu.id}` : 'Idle'}
-          </p>
-
-          <div className="mt-4">
-            <p className="font-semibold mb-1">📊 Gantt Chart:</p>
-            <div className="flex gap-2 flex-wrap">
-
-              {liveData.gantt.map((g, idx) => {
-
-                var duration = g.endTime - g.startTime;
-                duration = Math.max(1.5, duration);
-
-
-                return (
-                  <div key={idx} style={{ width: `${duration * 3}%` }} className="text-center">
-
-                    <div className={`${g.processId !== null ? 'bg-blue-500' : "bg-red-500"} text-white px-4 py-2 rounded`}>
-                      {g.processId !== null ? `P${g.processId}` : 'Idle'}
-                    </div>
-                    <div className="text-sm">
-                      {g.startTime} - {g.endTime}
-                    </div>
-                  </div>
-                )
-              }
-
-              )}
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              if (stopRef.current) stopRef.current();
-              setFinished(true);
-            }}
-            className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow"
-          >
-            {finished === false ? ('⏹ Stop Simulation'):("⏹ Stopped")}
-            
-          </button>
-
-        </div>
-      )}
-
-      {finished  && (
-        <p className="mt-4 text-green-700 font-bold">
-          ✅ Simulation Complete
-        </p>
-      )}
-      {
-        (liveData || Data) && (
-          <button
-            onClick={()=>{
-              handleReset();
-              if (stopRef.current) stopRef.current();
-
-            }}
-
-            className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow"
-          >
-            🔄 Reset
-          </button>
-        )
-      }
-
     </div>
+  )}
+
+  {Data && (
+    <ProcessOutputTable data={Data} />
+  )}
+
+  {liveData && (
+    <h1 className="text-lg font-semibold pl-3 mt-6"> 📊Process Visualization </h1>
+  )}
+
+  {liveData && (
+    <div ref={resultRef} className="mt-3 bg-gray-100 p-4 rounded shadow">
+      <p className="text-lg font-semibold">⏱ Time: {liveData.time}</p>
+      <p className="mt-2">🟡 Ready Queue: {liveData.readyQueue.length > 0 ? liveData.readyQueue.map((p) => `P${p.id}`).join(', ') : 'Empty'}</p>
+      <p className="mt-2">🟢 CPU Running: {liveData.cpu ? `P${liveData.cpu.id}` : 'Idle'}</p>
+      <div className="mt-4">
+        <p className="font-semibold mb-1">📊 Gantt Chart:</p>
+        <div className="flex gap-2 flex-wrap">
+          {liveData.gantt.map((g, idx) => {
+            let duration = g.endTime - g.startTime;
+            duration = Math.max(1.5, duration);
+            return (
+              <div key={idx} style={{ width: `${duration * 3}%` }} className="text-center">
+                <div className={`${g.processId !== null ? 'bg-blue-500' : 'bg-red-500'} text-white px-4 py-2 rounded`}>
+                  {g.processId !== null ? `P${g.processId}` : 'Idle'}
+                </div>
+                <div className="text-sm">{g.startTime} - {g.endTime}</div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      <button
+        onClick={() => {
+          if (stopRef.current) stopRef.current();
+          setFinished(true);
+        }}
+        className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow"
+      >
+        {finished === false ? '⏹ Stop Simulation' : '⏹ Stopped'}
+      </button>
+    </div>
+  )}
+
+  {finished && (
+    <p className="mt-4 text-green-700 font-bold">
+      ✅ Simulation Complete
+    </p>
+  )}
+
+  {(liveData || Data) && (
+    <button
+      onClick={() => {
+        handleReset();
+        if (stopRef.current) stopRef.current();
+      }}
+      className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow"
+    >
+      🔄 Reset
+    </button>
+  )}
+</div>
+
   )
 }
 

@@ -64,6 +64,12 @@ function Home() {
   return (
   <div className=''>
     <Header/> 
+    <div className="flex justify-center">
+    <button onClick={() => {navigate('/stats')}}  className="text-2xl cursor-pointer bg-gradient-to-r from-purple-500 to-purple-700 rounded-2xl font-bold text-white text-center py-2 px-4 mt-5 shadow-lg hover:scale-105 transform transition-transform duration-300">
+    View Stats
+    </button>
+</div>
+
 
     <div className='flex flex-row gap-20 py-5 flex-wrap px-10 justify-center'>
 
@@ -72,9 +78,9 @@ function Home() {
           <div className='w-52 border-2 cursor-pointer gap-4 aspect-square '
           onClick={() => {handleClick(al.name)}}
           >
-   
-            <img src={al.image} alt="" />
-            
+
+            <img src={al.image} alt={`${al.name} Image`} />
+
           </div>
         ))
       }
